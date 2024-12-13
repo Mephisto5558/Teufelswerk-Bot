@@ -4,17 +4,14 @@ const
   { timeValidator, timeFormatter: { secsInYear, msInSecond, timestamp }, commandMention } = require('#Utils'),
   MAX_YEAR_SECS = secsInYear * msInSecond * 2e5; // eslint-disable-line @typescript-eslint/no-magic-numbers -- 200000y
 
-/** @type {command<'both', false>} */
-module.exports = {
-  slashCommand: true,
-  prefixCommand: true,
+module.exports = new MixedCommand({
   dmPermission: true,
-  options: [{
+  options: [new CommandOption({
     name: 'time',
     type: 'String',
     autocompleteOptions() { return timeValidator(this.focused.value); },
     strictAutocomplete: true
-  }],
+  })],
 
   async run(lang) {
     const { offset } = new Duration(this.options?.getString('time') ?? this.args?.[0] ?? '0.1ms');
@@ -29,4 +26,4 @@ module.exports = {
     const stamp = timestamp(time, TimestampStyles.RelativeTime);
     return this.customReply(lang('success', { time: stamp, raw: inlineCode(stamp) }));
   }
-};
+});

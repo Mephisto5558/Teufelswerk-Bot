@@ -2,16 +2,13 @@ const
   { codeBlock } = require('discord.js'),
   { shellExec } = require('#Utils');
 
-/** @type {command<'prefix', false>} */
-module.exports = {
-  slashCommand: false,
-  prefixCommand: true,
+module.exports = new PrefixCommand({
   dmPermission: true,
-  options: [{
+  options: [new CommandOption({
     name: 'command',
     type: 'String',
     required: true
-  }],
+  })],
   beta: true,
 
   async run(lang) {
@@ -28,4 +25,4 @@ module.exports = {
 
     return log.debug(`executed bash command '${this.content}'`);
   }
-};
+});

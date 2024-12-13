@@ -101,53 +101,50 @@ const birthdayMainFunctions = {
   }
 };
 
-/** @type {command<'slash', false>} */
-module.exports = {
+module.exports = new SlashCommand({
   cooldowns: { user: msInSecond },
-  slashCommand: true,
-  prefixCommand: false,
   ephemeralDefer: true,
   options: [
-    {
+    new CommandOption({
       name: 'set',
       type: 'Subcommand',
       options: [
-        {
+        new CommandOption({
           name: 'day',
           type: 'Integer',
           required: true,
           minValue: 1,
           maxValue: daysInMonthMax
-        },
-        {
+        }),
+        new CommandOption({
           name: 'month',
           type: 'Integer',
           required: true,
           minValue: 1,
           maxValue: monthsInYear
-        },
-        {
+        }),
+        new CommandOption({
           name: 'year',
           type: 'Integer',
           required: true,
           /* eslint-disable-next-line @typescript-eslint/no-magic-numbers -- min. year */
           minValue: 1900,
           maxValue: currentYear
-        }
+        })
       ]
-    },
-    {
+    }),
+    new CommandOption({
       name: 'get',
       type: 'Subcommand',
       options: [
-        { name: 'target', type: 'User' },
-        { name: 'do_not_hide', type: 'Boolean' }
+        new CommandOption({ name: 'target', type: 'User' }),
+        new CommandOption({ name: 'do_not_hide', type: 'Boolean' })
       ]
-    },
-    { name: 'remove', type: 'Subcommand' }
+    }),
+    new CommandOption({ name: 'remove', type: 'Subcommand' })
   ],
 
   run(lang) {
     return birthdayMainFunctions[this.options.getSubcommand()].call(this, lang);
   }
-};
+});

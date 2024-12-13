@@ -4,7 +4,7 @@ import type Discord from 'discord.js';
 import type DiscordTicTacToe from 'discord-tictactoe';
 import type { I18nProvider } from '@mephisto5558/i18n';
 
-import type locals from './locals';
+import type Command from '@mephisto5558/command';
 import type DBStructure from './database';
 
 type ISODate = `${number}${number}${number}${number}-${number}${number}-${number}${number}`;
@@ -125,7 +125,6 @@ declare global {
     debug(...args: Parameters<Console['debug']>): typeof log;
     _log({ file, type }?: { file?: string; type?: string }, ...args: Parameters<Console['log']>): typeof log;
   };
-  type log = typeof log;
 
   /** Get an application Emoji's mention by it's name. */
   const getEmoji: (emoji: string) => `<a:${string}:${Snowflake}>` | `<${string}:${Snowflake}>` | undefined;
@@ -137,10 +136,19 @@ declare global {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   type GenericFunction = (...args: any) => any;
 
-  /* type SlashCommand = Command.SlashCommand;
-     type PrefixCommand = Command.PrefixCommand;
-     type MixedCommand = Command.MixedCommand;
-     type CommandOptions = Command.CommandOptions; */
+
+  type SlashCommand<canBeDM extends boolean = false> = Command.SlashCommand<canBeDM>;
+  const SlashCommand: typeof Command.SlashCommand;
+
+  type PrefixCommand<canBeDM extends boolean = false> = Command.PrefixCommand<canBeDM>;
+  const PrefixCommand: typeof Command.PrefixCommand;
+
+  type MixedCommand<canBeDM extends boolean = false> = Command.MixedCommand<canBeDM>;
+  const MixedCommand: typeof Command.MixedCommand;
+
+  type CommandOption<T_name extends Lowercase<string>> = Command.CommandOption<T_name>;
+  const CommandOption: typeof Command.CommandOption;
+
 
   type langBoundArgs = [ { locale?: string; errorNotFound?: boolean; undefinedNotFound?: boolean; backupPath?: string } ];
 
@@ -149,116 +157,6 @@ declare global {
 
   /** same as {@link lang}, but may return `undefined` due to undefinedNotFound being true on the {@link I18nProvider.__ original function}. */
   type langUNF = bBoundFunction<I18nProvider['__'], (this: I18nProvider, key: string, replacements?: string | object) => string | undefined> & { __boundArgs__: langBoundArgs };
-
-  // #endregion
-
-  // #region commands
-  type slashCommand<initialized extends boolean = false> = locals.BaseCommand<initialized> & {
-    slashCommand: true;
-    aliases?: { slash?: locals.BaseCommand['name'][] };
-
-    /** Do not deferReply to the interaction */
-    noDefer?: boolean;
-
-    /**
-     * Do `interaction.deferReply({ ephemeral: true })`.
-     *
-     * Gets ignored if {@link command.noDefer} is `true`. */
-    ephemeralDefer?: boolean;
-  } & (initialized extends true ? {
-
-    /** **Do not set manually.** */
-    id: Snowflake;
-
-    /** **Do not set manually.** */
-    type: Discord.ApplicationCommandType.ChatInput;
-
-    defaultMemberPermissions: Discord.PermissionsBitField;
-
-    dmPermission: boolean;
-  } : object);
-
-  type prefixCommand<initialized extends boolean = false> = locals.BaseCommand<initialized> & {
-    prefixCommand: true;
-    aliases?: { prefix?: locals.BaseCommand['name'][] };
-  };
-
-  type command<commandType extends 'prefix' | 'slash' | 'both' = 'both', guildOnly extends boolean = true, initialized extends boolean = false> = locals.BaseCommand<initialized>
-    & (commandType extends 'slash' | 'both' ? slashCommand<initialized> : object)
-    & (commandType extends 'prefix' | 'both' ? prefixCommand<initialized> : object)
-    & { run(
-      this: commandType extends 'slash'
-        ? Interaction<guildOnly>
-        : commandType extends 'prefix'
-          ? Message<guildOnly extends true ? true : boolean>
-          : Interaction<guildOnly> | Message<guildOnly extends true ? true : boolean>,
-      lang: lang, client: Discord.Client<true>
-    ): Promise<never>; };
-
-  type commandOptions<initialized extends boolean = boolean> = {
-    name: string;
-
-    /** Numbers in milliseconds */
-    cooldowns?: locals.BaseCommand<initialized>['cooldowns'];
-
-    /** If true, the user must provide a value to this option. This is also enforced for prefix commands. */
-    required?: boolean;
-
-    /**
-     * Only existent for {@link commandOptions.type} `SubcommandGroup` and `Subcommand`.
-     *
-     * Makes the subcommand also work in direct messages. */
-    dmPermission?: boolean;
-
-    /** Like choices, but not enforced unless {@link commandOptions.strictAutocomplete} is enabled. */
-    autocompleteOptions?: string | locals.autocompleteOptions[] | ((this: Discord.AutocompleteInteraction) => locals.autocompleteOptions[] | Promise<locals.autocompleteOptions>);
-
-    /**
-     * Return an error message to the user, if their input is not included in {@link commandOptions.autocompleteOptions}.
-     * Note that this happens for Messages as well. */
-    strictAutocomplete?: boolean;
-
-    options?: commandOptions<initialized>[];
-
-    minValue?: number;
-    maxValue?: number;
-    minLength?: number;
-    maxLength?: number;
-  } & (initialized extends true ? {
-    nameLocalizations?: locals.BaseCommand<true>['nameLocalizations'];
-
-    /**
-     * Gets set automatically from language files.
-     * @see {@link command.description} */
-    description: locals.BaseCommand<true>['description'];
-
-    /**
-     * Gets set automatically from language files.
-     * @see {@link command.description} */
-    descriptionLocalizations?: locals.BaseCommand<true>['descriptionLocalizations'];
-
-    type: typeof Discord.ApplicationCommandOptionType;
-
-    /** Choices the user must choose from. Can not be more then 25. */
-    choices?: {
-      name: string;
-      nameLocalizations?: locals.BaseCommand<true>['nameLocalizations'];
-      value: string | number;
-    }[];
-    autocomplete?: boolean;
-    channelTypes?: (keyof typeof Discord.ChannelType)[];
-  } : {
-    type: keyof typeof Discord.ApplicationCommandOptionType;
-
-    /** Choices the user must choose from. Can not be more then 25. */
-    choices?: (string | number | {
-      name: string;
-      nameLocalizations?: locals.BaseCommand<true>['nameLocalizations'];
-      value: string | number;
-    })[];
-
-    channelTypes?: (typeof Discord.ChannelType)[];
-  });
 
   // #endregion
 

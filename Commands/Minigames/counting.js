@@ -3,17 +3,14 @@ const
   { msInSecond } = require('#Utils').timeFormatter,
   { setupMinigameChannel } = require('#Utils/combinedCommands');
 
-/** @type {command<'both'>} */
-module.exports = {
+module.exports = new MixedCommand({
   permissions: { user: ['ManageChannels'] },
   cooldowns: { channel: msInSecond },
-  slashCommand: true,
-  prefixCommand: true,
-  options: [{
+  options: [new CommandOption({
     name: 'channel',
     type: 'Channel',
     channelTypes: Constants.GuildTextBasedChannelTypes
-  }],
+  })],
 
   run: setupMinigameChannel
-};
+});

@@ -2,30 +2,27 @@ const
   { afk: { nicknamePrefix, getAfkStatus, listAfkStatuses, setAfkStatus }, timeFormatter: { msInSecond } } = require('#Utils'),
   maxAllowedAFKMsgLength = 1000;
 
-/** @type {command<'both', false>} */
-module.exports = {
+module.exports = new MixedCommand({
   cooldowns: { user: msInSecond * 5 }, /* eslint-disable-line @typescript-eslint/no-magic-numbers -- 5s */
-  slashCommand: true,
-  prefixCommand: true,
   dmPermission: true,
   options: [
-    {
+    new CommandOption({
       name: 'set',
       type: 'Subcommand',
       options: [
-        {
+        new CommandOption({
           name: 'message',
           type: 'String',
           maxLength: maxAllowedAFKMsgLength
-        },
-        { name: 'global', type: 'Boolean' }
+        }),
+        new CommandOption({ name: 'global', type: 'Boolean' })
       ]
-    },
-    {
+    }),
+    new CommandOption({
       name: 'get',
       type: 'Subcommand',
-      options: [{ name: 'target', type: 'User' }]
-    }
+      options: [new CommandOption({ name: 'target', type: 'User' })]
+    })
   ],
 
   run(lang) {
@@ -39,4 +36,4 @@ module.exports = {
     const global = this.options?.getBoolean('global') ?? this.args?.[0] == 'global';
     return setAfkStatus.call(this, lang, global, this.options?.getString('message') ?? this.content?.slice(global ? nicknamePrefix.length + 1 : 0, maxAllowedAFKMsgLength));
   }
-};
+});

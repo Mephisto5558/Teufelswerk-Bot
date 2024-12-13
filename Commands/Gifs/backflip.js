@@ -6,12 +6,9 @@ const
     '1137786637162664106/pokemon-mew.gif', '1137786637573693561/neo-rwby.gif', '1137786637959581747/ezgif-5-7572493502.gif', '1137786638324469820/back-flip-attack-on-titan.gif'
   ];
 
-/** @type {command<'both', false>} */
-module.exports = {
+module.exports = new MixedCommand({
   aliases: { prefix: ['flip'] },
   cooldowns: { user: msInSecond },
-  slashCommand: true,
-  prefixCommand: true,
   dmPermission: true,
 
   async run(lang) {
@@ -24,4 +21,4 @@ module.exports = {
 
     return this.customReply({ embeds: [embed] });
   }
-};
+});

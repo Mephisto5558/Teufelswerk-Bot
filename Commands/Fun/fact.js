@@ -3,15 +3,12 @@ const
   fetch = import('node-fetch').then(e => e.default),
   { msInSecond } = require('#Utils').timeFormatter;
 
-/** @type {command<'both', false>} */
-module.exports = {
+module.exports = new MixedCommand({
   usage: {
     usage: '["en" | "de"]',
     examples: 'fact en'
   },
   cooldowns: { channel: msInSecond / 10 },
-  slashCommand: true,
-  prefixCommand: true,
   dmPermission: true,
 
   async run(lang) {
@@ -34,4 +31,4 @@ module.exports = {
 
     return this.customReply({ embeds: [embed], components: [component] });
   }
-};
+});

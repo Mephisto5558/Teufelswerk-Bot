@@ -1,7 +1,4 @@
-/** @type {command<'prefix', false>} */
-module.exports = {
-  slashCommand: false,
-  prefixCommand: true,
+module.exports = new PrefixCommand({
   dmPermission: true,
   beta: true,
 
@@ -11,4 +8,4 @@ module.exports = {
     await this.client.i18n.loadAllLocales();
     return this.customReply(lang('success'));
   }
-};
+});

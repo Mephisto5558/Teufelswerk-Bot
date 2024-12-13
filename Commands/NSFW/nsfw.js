@@ -5,14 +5,11 @@ const
   { msInSecond } = require('#Utils').timeFormatter,
   secretChance = 1e4; // 1 in 10_000
 
-/** @type {command<'both'>} */
-module.exports = {
+module.exports = new MixedCommand({
   usage: { examples: 'hentai' },
   cooldowns: { user: msInSecond },
-  slashCommand: true,
-  prefixCommand: true,
   ephemeralDefer: true,
-  options: [{
+  options: [new CommandOption({
     name: 'type',
     type: 'String',
     autocompleteOptions: [
@@ -20,7 +17,7 @@ module.exports = {
       'gonewild', 'ass', 'pussy', 'thigh', 'hthigh', 'paizuri', 'tentacle', 'boobs', 'hboobs', 'yaoi'
     ],
     strictAutocomplete: true
-  }],
+  })],
 
   async run(lang) {
     /** @type {{success: boolean, color: number, message: string}} */
@@ -36,4 +33,4 @@ module.exports = {
 
     return this.customReply({ embeds: [embed] });
   }
-};
+});

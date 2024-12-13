@@ -28,8 +28,8 @@ module.exports = async function commandExecutionWrapper(command, commandType, la
 
     if (this.client.botType != 'dev') {
       await this.client.db.update('botSettings', `cmdStats.${commandName}.${commandType}`, (this.client.settings.cmdStats[commandName]?.[commandType] ?? 0) + 1);
-      await this.user.updateDB(`cmdStats.${commandName}.${commandType}`, (this.user.db.cmdStats?.[commandName]?.[commandType] ?? 0) + 1);
-      if (this.inGuild()) await this.guild.updateDB(`cmdStats.${commandName}.${commandType}`, (this.guild.db.cmdStats?.[commandName]?.[commandType] ?? 0) + 1);
+      await this.user.updateDB(`cmdStats.${commandName}.${commandType}`, (this.user.db.cmdStats?.[commandName][commandType] ?? 0) + 1);
+      if (this.inGuild()) await this.guild.updateDB(`cmdStats.${commandName}.${commandType}`, (this.guild.db.cmdStats?.[commandName][commandType] ?? 0) + 1);
     }
   }
   catch (err) { return errorHandler.call(this.client, err, this, lang); }

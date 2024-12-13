@@ -7,7 +7,7 @@ Error.stackTraceLimit = maxStackTraceLimit;
 const
   { Client, GatewayIntentBits, AllowedMentionsTypes, Partials, ActivityType } = require('discord.js'),
   { WebServer } = require('@mephisto5558/bot-website'),
-  handlers = require('./Handlers'),
+  loaders = require('./Loaders'),
   events = require('./Events'),
   { GiveawaysManager, configValidator: { validateConfig }, gitpull, errorHandler, getCommands, shellExec /* , BackupSystem */ } = require('#Utils'),
   /* eslint-disable-next-line custom/unbound-method -- fine here */
@@ -67,7 +67,7 @@ async function processMessageEventCallback(handlerPromises, message) {
     ).init(getCommands.call(this, this.i18n.__.bBind(this.i18n, { locale: 'en', undefinedNotFound: true })));
   }
 
-  handlers.eventHandler.call(this);
+  loaders.eventLoader.call(this);
   await events.ready.call(this); // Run due to it not being ran on ready, before the handler is loaded
 }
 
@@ -102,9 +102,9 @@ void (async function main() {
 
   if (newClient.botType != 'dev') newClient.giveawaysManager = new GiveawaysManager(newClient);
 
-  /** Event handler gets loaded in {@link processMessageEventCallback} after the parent process exited to prevent duplicate code execution */
-  const handlerPromises = Object.entries(handlers).filter(([k]) => k != 'eventHandler').map(([,handler]) => handler.call(newClient));
-  handlerPromises.push(newClient.awaitReady().then(app => app.client.config.devIds.add(app.client.user.id).add('owner' in app.owner ? app.owner.owner.id : app.owner?.id)));
+  /** Event loader gets loaded in {@link processMessageEventCallback} after the parent process exited to prevent duplicate code execution */
+  const loaderPromises = Object.entries(loaders).filter(([k]) => k != 'eventLoader').map(([,loader]) => loader.call(newClient));
+  loaderPromises.push(newClient.awaitReady().then(app => app.client.config.devIds.add(app.client.user.id).add('owner' in app.owner ? app.owner.owner.id : app.owner?.id)));
 
   /** @type {Client<true>} */
   const client = await loginClient.call(newClient, newClient.keys.token);
@@ -112,16 +112,16 @@ void (async function main() {
   /** @param {string}emoji */
   globalThis.getEmoji = emoji => client.application.emojis.cache.find(e => e.name == emoji)?.toString();
 
-  if (process.connected) process.on('message', processMessageEventCallback.bind(client, handlerPromises));
+  if (process.connected) process.on('message', processMessageEventCallback.bind(client, loaderPromises));
 
-  await Promise.all(handlerPromises);
+  await Promise.all(loaderPromises);
 
   if (process.send?.('Finished starting') === false) {
     log.error('Could not tell the parent to kill itself. Exiting to prevent duplicate code execution.');
     process.exit(1);
   }
 
-  if (!process.connected) await processMessageEventCallback.call(client, handlerPromises, 'Start WebServer');
+  if (!process.connected) await processMessageEventCallback.call(client, loaderPromises, 'Start WebServer');
 
   void client.db.update('botSettings', `startCount.${client.botType}`, (client.settings.startCount[client.botType] ?? 0) + 1);
 

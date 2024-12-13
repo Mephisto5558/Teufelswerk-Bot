@@ -3,17 +3,14 @@ const
   { getAverageColor } = require('fast-average-color-node'),
   { msInSecond, timestamp } = require('#Utils').timeFormatter;
 
-/** @type {command<'both'>} */
-module.exports = {
+module.exports = new MixedCommand({
   aliases: { prefix: ['server-info', 'guildinfo', 'guild-info'] },
   cooldowns: { user: msInSecond },
-  slashCommand: true,
-  prefixCommand: true,
-  options: [{
+  options: [new CommandOption({
     name: 'guild_id_or_invite',
     type: 'String',
     autocompleteOptions() { return this.client.guilds.cache.filter(e => e.members.cache.has(this.member.id)).map(e => e.id); }
-  }],
+  })],
 
   async run(lang) {
     const id = this.options?.getString('guild_id_or_invite') ?? this.args?.[0];
@@ -96,4 +93,4 @@ module.exports = {
 
     return this.customReply({ embeds: [embed], components });
   }
-};
+});

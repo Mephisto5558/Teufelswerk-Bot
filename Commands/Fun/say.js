@@ -2,30 +2,27 @@ const
   { Constants, PermissionFlagsBits, Message, AllowedMentionsTypes } = require('discord.js'),
   { getTargetChannel, logSayCommandUse, constants } = require('#Utils');
 
-/** @type {command<'both'>} */
-module.exports = {
+module.exports = new MixedCommand({
   /* eslint-disable-next-line @typescript-eslint/no-magic-numbers */
   cooldowns: { user: 200 },
-  slashCommand: true,
-  prefixCommand: true,
   ephemeralDefer: true,
   options: [
-    {
+    new CommandOption({
       name: 'msg',
       type: 'String',
       maxLength: constants.messageMaxLength,
       required: true
-    },
-    {
+    }),
+    new CommandOption({
       name: 'channel',
       type: 'Channel',
       channelTypes: Constants.GuildTextBasedChannelTypes
-    },
-    {
+    }),
+    new CommandOption({
       name: 'reply_to', type: 'String',
       minLength: constants.snowflakeMinLength,
       maxLength: constants.snowflakeMaxLength
-    }
+    })
   ],
 
   async run(lang) {
@@ -49,4 +46,4 @@ module.exports = {
 
     return logSayCommandUse.call(sentMessage, this.member, lang);
   }
-};
+});

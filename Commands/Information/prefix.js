@@ -2,11 +2,8 @@ const
   { inlineCode } = require('discord.js'),
   { msInSecond } = require('#Utils').timeFormatter;
 
-/** @type {command<'both'>} */
-module.exports = {
+module.exports = new MixedCommand({
   cooldowns: { user: msInSecond },
-  slashCommand: true,
-  prefixCommand: true,
   beta: true,
 
   async run(lang) {
@@ -16,4 +13,4 @@ module.exports = {
 
     return this.customReply(lang('currentPrefixes', currentPrefixes.join('\n')));
   }
-};
+});

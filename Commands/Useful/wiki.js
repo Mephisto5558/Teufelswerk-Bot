@@ -6,15 +6,12 @@ const
   { constants: { embedFieldMaxAmt, messageMaxLength }, timeFormatter: { msInSecond, timestamp } } = require('#Utils'),
   MAX_MSGS = 9;
 
-/** @type {command<'both', false>} */
-module.exports = {
+module.exports = new MixedCommand({
   usage: { examples: 'discord' },
   aliases: { prefix: ['wikipedia'] },
   cooldowns: { channel: msInSecond / 10, user: msInSecond / 10 * 2 },
-  slashCommand: true,
-  prefixCommand: true,
   dmPermission: true,
-  options: [{ name: 'query', type: 'String' }],
+  options: [new CommandOption({ name: 'query', type: 'String' })],
 
   async run(lang) {
     const
@@ -62,7 +59,7 @@ module.exports = {
       }),
       maxSummaryLength = 2049;
 
-    // U+200E (LEFT-TO-RIGHT MARK) is used to make a newline for better spacing.
+    // U+200E (LEFT-TO-RIGHT MARK) is used to make a newline for better spacing;
     if (summary.length < maxSummaryLength) embed.data.description = `${summary}\n\u200E`;
 
     await message.edit({ content: '', embeds: [embed] });
@@ -89,4 +86,4 @@ module.exports = {
     for (const msg of msgs.slice(0, MAX_MSGS)) await this.customReply(msg);
     if (msgs.length > MAX_MSGS) return this.reply(bold(lang('visitWiki')));
   }
-};
+});

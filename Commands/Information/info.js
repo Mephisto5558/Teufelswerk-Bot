@@ -7,9 +7,8 @@ const
 
 /**
  * @this {Client<true>}
- * @param {command}cmd */
+ * @param {SlashCommand | PrefixCommand | MixedCommand}cmd */
 function commandListFilter(cmd) {
-  /* eslint-disable-next-line @typescript-eslint/no-deprecated -- will be fixed when commands are moved to their own lib */
   return !(cmd.aliasOf || this.config.ownerOnlyFolders.includes(cmd.category) || cmd.disabled);
 }
 
@@ -37,10 +36,7 @@ function getCommandCount(client) {
   return Object.fromEntries(Object.entries(count).map(([k, v]) => [k, inlineCode(v)]));
 }
 
-/** @type {command<'both', false>} */
-module.exports = {
-  slashCommand: true,
-  prefixCommand: true,
+module.exports = new MixedCommand({
   dmPermission: true,
 
   async run(lang) {
@@ -82,4 +78,4 @@ module.exports = {
 
     return this.customReply({ embeds: [embed], components: component.components.length ? [component] : undefined });
   }
-};
+});

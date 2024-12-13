@@ -6,6 +6,7 @@ const
   { randomInt } = require('node:crypto'),
   { join } = require('node:path'),
   { DB } = require('@mephisto5558/mongoose-db'),
+  { SlashCommand, PrefixCommand, MixedCommand, CommandOption } = require('@mephisto5558/command'),
   { I18nProvider } = require('@mephisto5558/i18n'),
   Log = require('./Log.js'),
   customReply = require('./message_customReply.js'),
@@ -22,6 +23,13 @@ module.exports = { Log, _patch, customReply, runMessages, playAgain };
 
 globalThis.log = new Log();
 globalThis.sleep = require('node:util').promisify(setTimeout);
+
+/* eslint-disable unicorn/no-null -- must be `null` for binding*/
+globalThis.SlashCommand = SlashCommand.bind(null, globalThis.log);
+globalThis.PrefixCommand = PrefixCommand.bind(null, globalThis.log);
+globalThis.MixedCommand = MixedCommand.bind(null, globalThis.log);
+globalThis.CommandOption = CommandOption.bind(null, globalThis.log);
+/* eslint-enable unicorn/no-null*/
 
 /**
  * @param {Record<string, any>}target
@@ -137,8 +145,9 @@ Object.defineProperty(BaseInteraction.prototype, 'customReply', {
   enumerable: false
 });
 Object.defineProperties(Client.prototype, {
-  prefixCommands: { value: new Collection() },
-  slashCommands: { value: new Collection() },
+  commands: {
+    value: { slash: new Collection(), prefix: new Collection() }
+  },
   i18n: {
     value: new I18nProvider({
       notFoundMessage: 'TEXT_NOT_FOUND: {key}', localesPath: join(process.cwd(), 'Locales'),

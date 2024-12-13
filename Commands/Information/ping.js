@@ -4,14 +4,11 @@ const
   maxPercentage = 100,
   embedUpdateMs = msInSecond * 4; /* eslint-disable-line @typescript-eslint/no-magic-numbers -- 4s */
 
-/** @type {command<'both', false>} */
-module.exports = {
+module.exports = new MixedCommand({
   cooldowns: { channel: msInSecond },
-  slashCommand: true,
-  prefixCommand: true,
   dmPermission: true,
   beta: true,
-  options: [{ name: 'average', type: 'Boolean' }],
+  options: [new CommandOption({ name: 'average', type: 'Boolean' })],
 
   async run(lang) {
     const
@@ -73,4 +70,4 @@ module.exports = {
 
     return msg.edit({ embeds: [embed] });
   }
-};
+});

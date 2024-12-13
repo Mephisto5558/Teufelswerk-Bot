@@ -4,18 +4,19 @@ const
   /** @type {Record<string, ActivityType | string | undefined>} */
   ActivityTypes = Object.fromEntries(Object.entries(ActivityType).map(([k, v]) => [k.toLowerCase(), v]));
 
-/** @type {command<'prefix', false>} */
-module.exports = {
-  slashCommand: false,
-  prefixCommand: true,
+module.exports = new PrefixCommand({
   dmPermission: true,
   options: [
-    {
+    new CommandOption({
+      name: 'activity',
+      type: 'String',
+      required: true
+    }),
+    new CommandOption({
       name: 'type',
       type: 'String',
-      choices: Object.entries(ActivityType).flatMap(([e]) => e.toLowerCase())
-    },
-    { name: 'activity', type: 'String' }
+      choices: Object.entries(ActivityType).flatMap(([e]) => e)
+    })
   ],
 
   async run(lang) {
@@ -36,4 +37,4 @@ module.exports = {
 
     return this.customReply(lang('set', { name: inlineCode(activity.name), type: inlineCode(ActivityType[activity.type]) }));
   }
-};
+});

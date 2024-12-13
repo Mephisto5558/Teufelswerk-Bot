@@ -101,7 +101,7 @@ const
         /** @type {lang} */
         newLang = this.client.i18n.__.bind(this.client.i18n, { locale: this.client.i18n.availableLocales.has(language) ? language : this.client.i18n.config.defaultLocale });
 
-      /** @type {command<'slash', true, true>} */
+      /** @type {SlashCommand<true>} */
       let { aliasOf, name, category } = this.client.slashCommands.get(this.commandName);
       if (aliasOf) ({ name, category } = this.client.slashCommands.get(aliasOf));
 
@@ -183,48 +183,45 @@ const
     }
   };
 
-/** @type {command<'slash'>} */
-module.exports = {
+module.exports = new SlashCommand({
   aliases: { slash: ['config'] },
   permissions: { user: ['ManageGuild'] },
   cooldowns: { user: msInSecond * 10 },
-  slashCommand: true,
-  prefixCommand: false,
   options: [
-    {
+    new CommandOption({
       name: 'toggle_module',
       type: 'Subcommand',
-      options: [{
+      options: [new CommandOption({
         name: 'module',
         type: 'String',
         required: true,
         choices: ['gatekeeper', 'birthday']
-      }]
-    },
-    {
+      })]
+    }),
+    new CommandOption({
       name: 'toggle_command',
       type: 'Subcommand',
       options: [
-        {
+        new CommandOption({
           name: 'command',
           type: 'String',
           required: true,
           autocompleteOptions() { return getCMDs(this.client); },
           strictAutocomplete: true
-        },
-        { name: 'get', type: 'Boolean' },
+        }),
+        new CommandOption({ name: 'get', type: 'Boolean' }),
         /* eslint-disable @typescript-eslint/no-magic-numbers -- TODO: convert to selectMenu */
-        ...Array.from({ length: 6 }, (_, i) => ({ type: 'Role', name: `role_${i + 1}` })),
-        ...Array.from({ length: 6 }, (_, i) => ({ type: 'Channel', name: `channel_${i + 1}`, channelTypes: Constants.GuildTextBasedChannelTypes })),
-        ...Array.from({ length: 6 }, (_, i) => ({ type: 'User', name: `member_${i + 1}` }))
+        ...Array.from({ length: 6 }, (_, i) => new CommandOption({ type: 'Role', name: `role_${i + 1}` })),
+        ...Array.from({ length: 6 }, (_, i) => new CommandOption({ type: 'Channel', name: `channel_${i + 1}`, channelTypes: Constants.GuildTextBasedChannelTypes })),
+        ...Array.from({ length: 6 }, (_, i) => new CommandOption({ type: 'User', name: `member_${i + 1}` }))
         /* eslint-enable @typescript-eslint/no-magic-numbers */
       ]
-    },
-    {
+    }),
+    new CommandOption({
       name: 'language',
       type: 'Subcommand',
       cooldowns: { guild: msInSecond * 10 },
-      options: [{
+      options: [new CommandOption({
         name: 'language',
         type: 'String',
         required: true,
@@ -240,87 +237,87 @@ module.exports = {
           }, []);
         },
         strictAutocomplete: true
-      }]
-    },
-    {
+      })]
+    }),
+    new CommandOption({
       name: 'set_prefix',
       type: 'Subcommand',
       options: [
-        {
+        new CommandOption({
           name: 'new_prefix',
           type: 'String',
           required: true
-        },
-        { name: 'case_insensitive', type: 'Boolean' }
+        }),
+        new CommandOption({ name: 'case_insensitive', type: 'Boolean' })
       ]
-    },
-    {
+    }),
+    new CommandOption({
       name: 'add_prefix',
       type: 'Subcommand',
       options: [
-        {
+        new CommandOption({
           name: 'new_prefix',
           type: 'String',
           required: true
-        },
-        { name: 'case_insensitive', type: 'Boolean' }
+        }),
+        new CommandOption({ name: 'case_insensitive', type: 'Boolean' })
       ]
-    },
-    {
+    }),
+    new CommandOption({
       name: 'remove_prefix',
       type: 'Subcommand',
       options: [
-        {
+        new CommandOption({
           name: 'prefix',
           type: 'String',
           autocompleteOptions() { return this.guild.db.config[this.client.botType == 'dev' ? 'betaBotPrefixes' : 'prefixes']?.map(e => e.prefix) ?? []; },
           strictAutocomplete: true,
           required: true
-        }
+        })
       ]
-    },
-    {
+    }),
+    new CommandOption({
       name: 'serverbackup',
       type: 'Subcommand',
-      options: [{
+      options: [new CommandOption({
         name: 'allowed_to_load',
         type: 'String',
         required: true,
         autocompleteOptions: [...backup.keys()],
         strictAutocomplete: true
-      }]
-    },
-    {
+      })]
+    }),
+    new CommandOption({
       name: 'autopublish',
       type: 'Subcommand',
-      options: [{
+      options: [new CommandOption({
         name: 'enabled',
         type: 'Boolean',
         required: true
-      }]
-    },
-    {
+      })]
+    }),
+    new CommandOption({
       name: 'logger',
       type: 'Subcommand',
       options: [
-        {
+        new CommandOption({
           name: 'action',
           type: 'String',
           required: true,
           choices: ['all', ...loggerActionTypes]
-        },
-        {
+        }),
+        new CommandOption({
           name: 'channel',
           type: 'Channel',
           channelTypes: Constants.GuildTextBasedChannelTypes
-        },
-        { name: 'enabled', type: 'Boolean' }
+        }),
+        new CommandOption({ name: 'enabled', type: 'Boolean' })
       ]
-    }
+    })
   ],
 
   async run(lang) {
     lang.__boundArgs__[0].backupPath += `.${this.options.getSubcommand().replaceAll(/_./g, e => e[1].toUpperCase())}`;
     return setupMainFunctions[this.options.getSubcommand()].call(this, lang);
   }
-};
+});

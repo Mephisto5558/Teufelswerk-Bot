@@ -71,32 +71,29 @@ async function getJoke(apiList = [], type = '', blacklist = '', maxLength = mess
   return apiList.length ? getJoke.call(this, apiList, type, blacklist, maxLength) : [];
 }
 
-/** @type {command<'both', false>} */
-module.exports = {
+module.exports = new MixedCommand({
   usage: { examples: 'dadjoke' },
   cooldowns: { channel: msInSecond / 10 },
-  slashCommand: true,
-  prefixCommand: true,
   dmPermission: true,
   options: [
-    {
+    new CommandOption({
       name: 'api',
       type: 'String',
       autocompleteOptions: defaultAPIList.map(e => e.name),
       strictAutocomplete: true
-    },
-    { name: 'type', type: 'String' },
-    {
+    }),
+    new CommandOption({ name: 'type', type: 'String' }),
+    new CommandOption({
       name: 'blacklist',
       type: 'String',
       choices: ['nsfw', 'religious', 'political', 'racist', 'sexist', 'explicit']
-    },
-    {
+    }),
+    new CommandOption({
       name: 'max_length',
       type: 'Integer',
       minValue: 10,
       maxValue: messageMaxLength
-    }
+    })
   ],
 
   async run(lang) {
@@ -124,4 +121,4 @@ module.exports = {
 
     return this.customReply({ embeds: [embed], components: [component] });
   }
-};
+});

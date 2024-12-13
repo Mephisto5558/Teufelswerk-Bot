@@ -2,25 +2,22 @@ const
   { EmbedBuilder, Colors, bold, inlineCode } = require('discord.js'),
   { timeFormatter: { msInSecond }, commandMention } = require('#Utils');
 
-/** @type {command<'both', false>} */
-module.exports = {
+module.exports = new MixedCommand({
   usage: { examples: 'user joke' },
   cooldowns: { user: msInSecond },
-  slashCommand: true,
-  prefixCommand: true,
   dmPermission: true,
   options: [
-    {
+    new CommandOption({
       name: 'scope',
       type: 'String',
       choices: ['bot', 'guild', 'user']
-    },
-    {
+    }),
+    new CommandOption({
       name: 'command',
       type: 'String',
       autocompleteOptions() { return [...this.client.prefixCommands.keys(), ...this.client.slashCommands.keys()].unique(); },
       strictAutocomplete: true
-    }
+    })
   ],
 
   async run(lang) {
@@ -63,4 +60,4 @@ module.exports = {
 
     return this.customReply({ embeds: [embed] });
   }
-};
+});

@@ -24,8 +24,8 @@ module.exports = function getCommands(lang) {
       ).trim().replaceAll('\n', '<br>&nbsp'),
       commandDescription: lang(`commands.${cmd.category}.${cmd.name}.description`) ?? cmd.description,
       commandAlias: (
-        (cmd.aliases?.prefix?.length ? `Prefix: ${cmd.aliases.prefix.join(', ')}\n` : '')
-        + (cmd.aliases?.slash?.length ? `Slash: ${cmd.aliases.slash.join(', ')}` : '') || lang('global.none')
+        (cmd.aliases.prefix?.length ?? 0 ? `Prefix: ${cmd.aliases.prefix.join(', ')}\n` : '')
+        + (cmd.aliases.slash?.length ?? 0 ? `Slash: ${cmd.aliases.slash.join(', ')}` : '') || lang('global.none')
       ).trim().replaceAll('\n', '<br>&nbsp')
     });
 

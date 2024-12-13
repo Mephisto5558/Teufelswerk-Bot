@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-deprecated -- will be fixed when commands are moved to their own lib */
 const
   { Collection, codeBlock, inlineCode } = require('discord.js'),
   { resolve, basename, dirname } = require('node:path'),
@@ -8,13 +7,13 @@ const
 
 /**
  * @this {Client}
- * @param {command<string, boolean>}command
+ * @param {SlashCommand | PrefixCommand | MixedCommand}command
  * @param {string[]}reloadedArray gets modified and not returned */
 async function reloadCommand(command, reloadedArray) {
   /* eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- require.cache */
   delete require.cache[command.filePath];
 
-  /** @type {command<string, boolean>} */
+  /** @type {SlashCommand | PrefixCommand | MixedCommand} */
   let file = {};
   try {
     file = formatCommand(
@@ -33,8 +32,8 @@ async function reloadCommand(command, reloadedArray) {
     this.prefixCommands.set(file.name, file);
     reloadedArray.push(file.name);
 
-    for (const alias of command.aliases?.prefix ?? []) this.prefixCommands.delete(alias);
-    for (const alias of file.aliases?.prefix ?? []) {
+    for (const alias of command.aliases.prefix ?? []) this.prefixCommands.delete(alias);
+    for (const alias of file.aliases.prefix ?? []) {
       this.prefixCommands.set(alias, { ...file, aliasOf: file.name });
       reloadedArray.push(alias);
     }
@@ -57,9 +56,9 @@ async function reloadCommand(command, reloadedArray) {
 
     this.slashCommands.delete(command.name);
     this.slashCommands.set(file.name, file);
-    reloadedArray.push(commandMention(file.name, file.id ?? 0));
+    reloadedArray.push(commandMention(file.name, file.id));
 
-    for (const alias of [...file.aliases?.slash ?? [], ...command.aliases?.slash ?? []].unique()) {
+    for (const alias of [...file.aliases.slash ?? [], ...command.aliases.slash ?? []].unique()) {
       const { id } = this.slashCommands.get(alias) ?? {};
       let cmdId;
 
@@ -85,22 +84,19 @@ async function reloadCommand(command, reloadedArray) {
       reloadedArray.push(commandMention(alias, cmdId ?? 0));
     }
   }
-  else if (!file.slashCommand && command.slashCommand) {
+  else if (command.slashCommand) {
     this.slashCommands.delete(command.name);
-    if (command.id) await this.application.commands.delete(command.id);
+    await this.application.commands.delete(command.id);
   }
 }
 
-/** @type {command<'prefix', false>} */
-module.exports = {
-  slashCommand: false,
-  prefixCommand: true,
+module.exports = new PrefixCommand({
   dmPermission: true,
-  options: [{
+  options: [new CommandOption({
     name: 'command_name',
     type: 'String',
     required: true
-  }],
+  })],
   beta: true,
 
   async run(lang) {
@@ -126,7 +122,7 @@ module.exports = {
           }
 
           if (this.args[1]?.startsWith('Commands/')) {
-            /** @type {command<'both', boolean>} */
+            /** @type {MixedCommand} */
             const cmd = require(filePath);
             cmd.filePath = filePath;
             cmd.category = this.args[1].split('/')[1].toLowerCase();
@@ -166,4 +162,4 @@ module.exports = {
     void (errorOccurred ? msg.reply(replyText) : msg.edit(replyText));
     log.debug('Finished reloading commands.');
   }
-};
+});

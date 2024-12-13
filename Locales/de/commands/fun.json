@@ -286,6 +286,9 @@
     "noAPIAvailable": "Leider ist zurzeit keine API verfügbar. Bitte versuche es später nochmal.",
     "embedTitle": "Ist das witzig?"
   },
+  "marin": {
+    "description": "Etwas besonders, für jemand besonderen."
+  },
   "pokedex": {
     "description": "Zeigt Informationen über Pokémon an.",
     "usage": {

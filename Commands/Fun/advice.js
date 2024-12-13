@@ -2,10 +2,7 @@ const
   { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js'),
   fetch = import('node-fetch').then(e => e.default);
 
-/** @type {command<'both', false>} */
-module.exports = {
-  slashCommand: true,
-  prefixCommand: true,
+module.exports = new MixedCommand({
   dmPermission: true,
 
   async run(lang) {
@@ -25,4 +22,4 @@ module.exports = {
 
     return this.customReply({ embeds: [embed], components: [component] });
   }
-};
+});

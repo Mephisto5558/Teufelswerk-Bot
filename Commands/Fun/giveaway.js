@@ -100,101 +100,98 @@ const
     }
   };
 
-/** @type {command<'slash'>} */
-module.exports = {
+module.exports = new SlashCommand({
   permissions: { user: ['ManageMessages'] },
   cooldowns: { user: msInSecond },
-  slashCommand: true,
-  prefixCommand: false,
   ephemeralDefer: true,
   options: [
-    {
+    new CommandOption({
       name: 'create',
       type: 'Subcommand',
       options: [
-        {
+        new CommandOption({
           name: 'prize',
           type: 'String',
           required: true
-        },
-        {
+        }),
+        new CommandOption({
           name: 'description',
           type: 'String',
           required: true
-        },
-        {
+        }),
+        new CommandOption({
           name: 'duration',
           type: 'String',
           required: true,
           autocompleteOptions() { return timeValidator(this.focused.value); }
-        },
-        {
+        }),
+        new CommandOption({
           name: 'winner_count',
           type: 'Integer',
           required: true,
           minValue: 1
-        },
-        {
+        }),
+        new CommandOption({
           name: 'channel',
           type: 'Channel',
           channelTypes: Constants.GuildTextBasedChannelTypes
-        },
-        { name: 'reaction', type: 'String' },
-        { name: 'thumbnail', type: 'String' },
-        { name: 'image', type: 'String' },
-        { name: 'exempt_members', type: 'String' },
-        { name: 'required_roles', type: 'String' },
-        { name: 'bonus_entries', type: 'String' },
-        { name: 'embed_color', type: 'String' },
-        { name: 'embed_color_end', type: 'String' }
+        }),
+        new CommandOption({ name: 'reaction', type: 'String' }),
+        new CommandOption({ name: 'thumbnail', type: 'String' }),
+        new CommandOption({ name: 'image', type: 'String' }),
+        new CommandOption({ name: 'exempt_members', type: 'String' }),
+        new CommandOption({ name: 'required_roles', type: 'String' }),
+        new CommandOption({ name: 'bonus_entries', type: 'String' }),
+        new CommandOption({ name: 'embed_color', type: 'String' }),
+        new CommandOption({ name: 'embed_color_end', type: 'String' })
       ]
-    },
-    {
+    }),
+    new CommandOption({
       name: 'end',
       type: 'Subcommand',
-      options: [{
+      options: [new CommandOption({
         name: 'id',
         type: 'String',
         required: true
-      }]
-    },
-    {
+      })]
+    }),
+    new CommandOption({
       name: 'edit',
       type: 'Subcommand',
       options: [
-        {
+        new CommandOption({
           name: 'id',
           type: 'String',
           required: true
-        },
-        {
+        }),
+        new CommandOption({
           name: 'add_time',
           type: 'String',
           autocompleteOptions() { return timeValidator(this.focused.value); },
           strictAutocomplete: true
-        },
-        {
+        }),
+        new CommandOption({
           name: 'winner_count',
           type: 'Integer',
           minValue: 1
-        },
-        { name: 'prize', type: 'String' },
-        { name: 'thumbnail', type: 'String' },
-        { name: 'image', type: 'String' },
-        { name: 'exempt_members', type: 'String' },
-        { name: 'required_roles', type: 'String' },
-        { name: 'bonus_entries', type: 'String' }
+        }),
+        new CommandOption({ name: 'prize', type: 'String' }),
+        new CommandOption({ name: 'thumbnail', type: 'String' }),
+        new CommandOption({ name: 'image', type: 'String' }),
+        new CommandOption({ name: 'exempt_members', type: 'String' }),
+        new CommandOption({ name: 'required_roles', type: 'String' }),
+        new CommandOption({ name: 'bonus_entries', type: 'String' })
       ]
-    },
-    {
+    }),
+    new CommandOption({
       name: 'reroll',
       type: 'Subcommand',
-      options: [{
+      options: [new CommandOption({
         name: 'id',
         type: 'String',
         required: true
-      }]
-    }
+      })]
+    })
   ],
 
   async run(lang) {
@@ -231,4 +228,4 @@ module.exports = {
 
     return giveawayMainFunctions[this.options.getSubcommand()].call(this, lang, components, { bonusEntries, requiredRoles, disallowedMembers, duration, giveawayId });
   }
-};
+});

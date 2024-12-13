@@ -15,8 +15,10 @@ declare module 'discord-api-types/v10' {
 
 declare module 'discord.js' {
   interface Client<Ready> {
-    prefixCommands: Discord.Collection<command['name'], command<'prefix', boolean, Ready>>;
-    slashCommands: Discord.Collection<command['name'], command<'slash', boolean, Ready>>;
+    commands: {
+      slash: Discord.Collection<SlashCommand['name'], SlashCommand | MixedCommand>;
+      prefix: Discord.Collection<PrefixCommand['name'], PrefixCommand | MixedCommand>;
+    };
     backupSystem?: BackupSystem.BackupSystem;
     giveawaysManager?: GiveawaysManager;
 
@@ -56,7 +58,7 @@ declare module 'discord.js' {
     /** Alias for {@link Message.author} */
     user: Message['author'];
 
-    /** This does not exist on Messages and is only for better typing of {@link command} here */
+    /** This does not exist on Messages and is only for better typing of {@link PrefixCommand} here */
     /* eslint-disable-next-line @typescript-eslint/no-invalid-void-type -- valid use case, as this property does not really exist */
     options: void;
 

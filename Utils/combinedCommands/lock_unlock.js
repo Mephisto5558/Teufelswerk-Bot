@@ -36,7 +36,7 @@ module.exports = async function lock_unlock(lang) {
 
     if (
       this.guild.roles.everyone.editable
-      && channel.permissionsFor(this.guild.roles.everyone.id)?.has(PermissionFlagsBits.SendMessages)
+      && channel.permissionsFor(this.guild.roles.everyone.id).has(PermissionFlagsBits.SendMessages)
     ) overwrites[this.guild.roles.everyone.id] = OverwriteType.Role;
 
     if (overwrites.__count__) await this.guild.updateDB(`lockedChannels.${channel.id}`, overwrites);

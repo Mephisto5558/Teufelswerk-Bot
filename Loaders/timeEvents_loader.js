@@ -3,7 +3,7 @@ const
   jobs = require('../TimeEvents');
 
 /** @this {Client} */
-module.exports = async function timeEventsHandler() {
+module.exports = async function timeEventsLoader() {
   if (this.botType == 'dev') return void log('Disabled timed events due to dev version.');
 
   await this.awaitReady();

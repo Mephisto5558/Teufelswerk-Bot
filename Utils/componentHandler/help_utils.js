@@ -70,7 +70,7 @@ function createCommandsComponent(lang, category) {
 
 /**
  * @this {Interaction | Message}
- * @param {command<string, boolean, true> | undefined}cmd
+ * @param {SlashCommand | PrefixCommand | MixedCommand | undefined}cmd
  * @param {lang}lang */
 function createInfoFields(cmd, lang) {
   const
@@ -79,15 +79,15 @@ function createInfoFields(cmd, lang) {
     prefix = this.guild?.db.config[prefixKey]?.[0].prefix ?? this.client.defaultSettings.config[prefixKey][0].prefix;
 
   cmd ??= {};
-  if (cmd.aliases?.prefix?.length) arr.push({ name: lang('one.prefixAlias'), value: cmd.aliases.prefix.map(inlineCode).join(', '), inline: true });
-  if (cmd.aliases?.slash?.length) arr.push({ name: lang('one.slashAlias'), value: cmd.aliases.slash.map(inlineCode).join(', '), inline: true });
+  if (cmd.aliases.prefix?.length ?? 0) arr.push({ name: lang('one.prefixAlias'), value: cmd.aliases.prefix.map(inlineCode).join(', '), inline: true });
+  if (cmd.aliases.slash?.length ?? 0) arr.push({ name: lang('one.slashAlias'), value: cmd.aliases.slash.map(inlineCode).join(', '), inline: true });
   if (cmd.aliasOf) arr.push({ name: lang('one.aliasOf'), value: inlineCode(cmd.aliasOf), inline: true });
-  if (cmd.permissions?.client?.length > 0)
+  if (cmd.permissions.client.length > 0)
     arr.push({ name: lang('one.botPerms'), value: permissionTranslator(cmd.permissions.client, lang.__boundArgs__[0].locale, this.client.i18n).map(inlineCode).join(', '), inline: false });
-  if (cmd.permissions?.user?.length > 0)
+  if (cmd.permissions.user.length > 0)
     arr.push({ name: lang('one.userPerms'), value: permissionTranslator(cmd.permissions.user, lang.__boundArgs__[0].locale, this.client.i18n).map(inlineCode).join(', '), inline: true });
 
-  const cooldowns = Object.entries(cmd.cooldowns ?? {}).filter(([, e]) => e);
+  const cooldowns = Object.entries(cmd.cooldowns).filter(([, e]) => e);
   if (cooldowns.length) {
     arr.push({
       name: lang('one.cooldowns'), inline: false,
@@ -114,7 +114,7 @@ function createInfoFields(cmd, lang) {
 
 /**
  * @this {Interaction | Message}
- * @param {command<string, boolean, true> | undefined}cmd */
+ * @param {SlashCommand | PrefixCommand | MixedCommand | undefined}cmd */
 function filterCommands(cmd) {
   return !!cmd?.name && !cmd.disabled && (this.client.botType != 'dev' || cmd.beta)
     && (!this.client.config.ownerOnlyFolders.includes(cmd.category) || this.client.config.devIds.has(this.user.id));

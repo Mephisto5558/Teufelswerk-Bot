@@ -1,10 +1,7 @@
 // Credit for many of the response messages goes to the Lawliet Bot: https://github.com/Aninoss/lawliet-bot/tree/master/src/main/jib/data/resources
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
-/** @type {command<'both', false>} */
-module.exports = {
-  slashCommand: true,
-  prefixCommand: true,
+module.exports = new MixedCommand({
   dmPermission: true,
 
   async run(lang) {
@@ -24,4 +21,4 @@ module.exports = {
 
     return this.customReply({ embeds: [embed], components: [component] });
   }
-};
+});

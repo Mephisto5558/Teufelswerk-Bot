@@ -8,57 +8,54 @@ const
 // 2nd const keyword because of intellisense
 const getStringOption = (interaction, name) => interaction.options.getString(name)?.replaceAll('/n', '\n');
 
-/** @type {command<'slash', false>} */
-module.exports = {
+module.exports = new SlashCommand({
   permissions: { user: ['EmbedLinks'] },
   /* eslint-disable-next-line @typescript-eslint/no-magic-numbers */
   cooldowns: { user: 200 },
-  slashCommand: true,
-  prefixCommand: false,
   dmPermission: true,
   ephemeralDefer: true,
   options: [
-    {
+    new CommandOption({
       name: 'custom',
       type: 'Subcommand',
       options: [
-        {
+        new CommandOption({
           name: 'description',
           type: 'String',
           required: true
-        },
-        {
+        }),
+        new CommandOption({
           name: 'content',
           type: 'String',
           maxLength: constants.messageMaxLength
-        },
-        { name: 'title', type: 'String' },
-        {
+        }),
+        new CommandOption({ name: 'title', type: 'String' }),
+        new CommandOption({
           name: 'predefined_color',
           type: 'String',
           autocompleteOptions: Object.entries(Colors).map(e => e[0]),
           strictAutocomplete: true
-        },
-        { name: 'custom_color', type: 'String' },
-        { name: 'footer_text', type: 'String' },
-        { name: 'footer_icon', type: 'String' },
-        { name: 'image', type: 'String' },
-        { name: 'thumbnail', type: 'String' },
-        { name: 'timestamp', type: 'Boolean' },
-        { name: 'author_name', type: 'String' },
-        { name: 'author_url', type: 'String' },
-        { name: 'author_icon', type: 'String' }
+        }),
+        new CommandOption({ name: 'custom_color', type: 'String' }),
+        new CommandOption({ name: 'footer_text', type: 'String' }),
+        new CommandOption({ name: 'footer_icon', type: 'String' }),
+        new CommandOption({ name: 'image', type: 'String' }),
+        new CommandOption({ name: 'thumbnail', type: 'String' }),
+        new CommandOption({ name: 'timestamp', type: 'Boolean' }),
+        new CommandOption({ name: 'author_name', type: 'String' }),
+        new CommandOption({ name: 'author_url', type: 'String' }),
+        new CommandOption({ name: 'author_icon', type: 'String' })
       ]
-    },
-    {
+    }),
+    new CommandOption({
       name: 'json',
       type: 'Subcommand',
-      options: [{
+      options: [new CommandOption({
         name: 'json',
         type: 'String',
         required: true
-      }]
-    }
+      })]
+    })
   ],
 
   async run(lang) {
@@ -103,4 +100,4 @@ module.exports = {
     await this.editReply(custom ? lang('successJSON') : lang('success', codeBlock('json', JSON.stringify(embed.data.filterEmpty()))));
     return logSayCommandUse.call(sentMessage, this.member, lang);
   }
-};
+});

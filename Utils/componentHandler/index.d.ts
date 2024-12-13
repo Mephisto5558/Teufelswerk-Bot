@@ -49,7 +49,7 @@ declare function help_categoryQuery(
   this: Interaction | Message,
   lang: lang, query?: string
 ): Promise<Message>;
-declare function help_getCommands(this: Interaction | Message): (command<'prefix', boolean, true> | command<'slash', boolean, true>)[];
+declare function help_getCommands(this: Interaction | Message): (PrefixCommand | SlashCommand)[];
 declare function help_getCommandCategories(this: Interaction | Message): string[];
 declare function help_allQuery(
   this: Interaction | Message,

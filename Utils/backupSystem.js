@@ -60,6 +60,7 @@ class BackupSystem {
 
     statusObj.status = 'create.settings';
     const data = {
+      /* eslint-disable-next-line sonarjs/no-incorrect-string-concat -- false positive */
       id: id ?? guild.id + SnowflakeUtil.generate().toString(),
       metadata: metadata ?? undefined,
       createdAt: new Date(),

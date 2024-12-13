@@ -17,26 +17,23 @@ const
  * @param {string?}lastRandomChar */
 const getRandomChar = (charset, lastRandomChar) => charset.filter(e => e !== lastRandomChar).random();
 
-/** @type {command<'slash', false>} */
-module.exports = {
+module.exports = new SlashCommand({
   cooldowns: { user: msInSecond },
-  slashCommand: true,
-  prefixCommand: false,
   dmPermission: true,
   ephemeralDefer: true,
   options: [
-    {
+    new CommandOption({
       name: 'length',
       type: 'Integer',
       maxValue: MAX_PASSWORD_LENGTH
-    },
-    {
+    }),
+    new CommandOption({
       name: 'count',
       type: 'Integer',
       maxValue: MAX_PASSWORDS
-    },
-    { name: 'exclude_chars', type: 'String' },
-    { name: 'include_chars', type: 'String' }
+    }),
+    new CommandOption({ name: 'exclude_chars', type: 'String' }),
+    new CommandOption({ name: 'include_chars', type: 'String' })
   ],
 
   async run(lang) {
@@ -76,4 +73,4 @@ module.exports = {
 
     return this.editReply(lang('success', { passwords: passwordList.join('\n'), charset: codeBlock(charset) }));
   }
-};
+});

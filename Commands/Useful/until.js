@@ -30,49 +30,46 @@ function getTime(year, month, day, ...args) {
   return year.inRange(allowedYearStart, allowedYearEnd) ? new Date(year - DATE_START, month, day, ...args).setFullYear(year) : new Date(year, month, day, ...args).getTime();
 }
 
-/** @type {command<'both', false>} */
-module.exports = {
-  slashCommand: true,
-  prefixCommand: true,
+module.exports = new MixedCommand({
   dmPermission: true,
   options: [
-    {
+    new CommandOption({
       name: 'day',
       type: 'Integer',
       minValue: 1,
       maxValue: daysInMonthMax
-    },
-    {
+    }),
+    new CommandOption({
       name: 'month',
       type: 'Integer',
       minValue: 1,
       maxValue: monthsInYear
-    },
-    {
+    }),
+    new CommandOption({
       name: 'year',
       type: 'Integer',
       minValue: 0,
       /* eslint-disable-next-line @typescript-eslint/no-magic-numbers -- max years */
       maxValue: 2e5
-    },
-    {
+    }),
+    new CommandOption({
       name: 'hour',
       type: 'Integer',
       minValue: 0,
       maxValue: hoursInDay - 1
-    },
-    {
+    }),
+    new CommandOption({
       name: 'minute',
       type: 'Integer',
       minValue: 0,
       maxValue: minutesInHour - 1
-    },
-    {
+    }),
+    new CommandOption({
       name: 'second',
       type: 'Integer',
       minValue: 0,
       maxValue: secsInHour - 1
-    }
+    })
   ],
 
   async run(lang) {
@@ -89,4 +86,4 @@ module.exports = {
 
     return this.customReply(lang(negative ? 'untilNeg' : 'until', formatted));
   }
-};
+});

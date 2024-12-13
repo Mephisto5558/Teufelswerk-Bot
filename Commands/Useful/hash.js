@@ -3,26 +3,23 @@ const
   { getHashes, createHash } = require('node:crypto'),
   { constants: { embedDescriptionMaxLength }, timeFormatter: { msInSecond } } = require('#Utils');
 
-/** @type {command<'slash', false>} */
-module.exports = {
+module.exports = new SlashCommand({
   cooldowns: { user: msInSecond },
-  slashCommand: true,
-  prefixCommand: false,
   dmPermission: true,
   ephemeralDefer: true,
   options: [
-    {
+    new CommandOption({
       name: 'input',
       type: 'String',
       required: true
-    },
-    {
+    }),
+    new CommandOption({
       name: 'method',
       type: 'String',
       autocompleteOptions: getHashes(),
       strictAutocomplete: true,
       required: true
-    }
+    })
   ],
 
   async run(lang) {
@@ -40,4 +37,4 @@ module.exports = {
 
     return this.editReply({ content: lang('text', inlineCode(createHash(method).update(input).digest('hex'))), embeds: [embed] });
   }
-};
+});

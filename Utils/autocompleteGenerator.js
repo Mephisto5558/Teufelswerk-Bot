@@ -11,12 +11,12 @@ module.exports = function autocompleteGenerator(command, locale) {
     + `.choices.${v}`) ?? v,
   value: v });
 
-  /** @type {commandOptions[]} */
+  /** @type {CommandOption[]} */
   let [...options] = command.options;
   if (this.options?._group) ({ options } = options.find(e => e.name == this.options._group));
   if (this.options?._subcommand) ({ options } = options.find(e => e.name == this.options._subcommand));
 
-  /** @type {{autocompleteOptions: Exclude<commandOptions['autocompleteOptions'], Function>}} Excludes<> because we call autocompleteOptions below if it is a function */
+  /** @type {{autocompleteOptions: Exclude<CommandOption['autocompleteOptions'], Function>}} Excludes<> because we call autocompleteOptions below if it is a function */
   let { autocompleteOptions } = options.find(e => e.name == this.focused.name) ?? {};
   if (typeof autocompleteOptions == 'function') autocompleteOptions = autocompleteOptions.call(this);
 

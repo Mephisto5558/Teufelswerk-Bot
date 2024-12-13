@@ -2,19 +2,16 @@ const
   { userMention } = require('discord.js'),
   { checkTargetManageable, timeFormatter: { msInSecond } } = require('#Utils');
 
-/** @type {command<'slash'>} */
-module.exports = {
+module.exports = new SlashCommand({
   permissions: { client: ['MuteMembers'], user: ['MuteMembers'] },
   cooldowns: { user: msInSecond / 10 },
-  slashCommand: true,
-  prefixCommand: false,
   options: [
-    {
+    new CommandOption({
       name: 'target',
       type: 'User',
       required: true
-    },
-    { name: 'reason', type: 'String' }
+    }),
+    new CommandOption({ name: 'reason', type: 'String' })
   ],
 
   async run(lang) {
@@ -34,4 +31,4 @@ module.exports = {
     await target.disableCommunicationUntil(null, `${reason} | ${lang('global.modReason', { command: this.commandName, user: this.user.tag })}`);
     return this.editReply(lang('success', userMention(target.user.id)));
   }
-};
+});

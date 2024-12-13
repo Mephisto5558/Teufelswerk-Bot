@@ -4,10 +4,7 @@ const
   /** @type {Client['config']} */
   { website: { dashboard } = {}, disableWebserver } = require(require('node:path').resolve(process.cwd(), 'config.json'));
 
-/** @type {command<'both', false>} */
-module.exports = {
-  slashCommand: true,
-  prefixCommand: true,
+module.exports = new MixedCommand({
   dmPermission: true,
   disabled: !!disableWebserver || !dashboard,
   disabledReason: disableWebserver ? 'The webserver is disabled.' : 'Missing dashboard url in config.json',
@@ -21,4 +18,4 @@ module.exports = {
 
     return this.customReply({ embeds: [embed] });
   }
-};
+});

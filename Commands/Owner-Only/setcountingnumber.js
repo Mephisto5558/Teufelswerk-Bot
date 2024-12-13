@@ -2,11 +2,8 @@ const
   { channelLink, bold } = require('discord.js'),
   { getTargetChannel } = require('#Utils');
 
-/** @type {command<'prefix'>} */
-module.exports = {
+module.exports = new PrefixCommand({
   aliases: { prefix: ['setcountingnum'] },
-  slashCommand: false,
-  prefixCommand: true,
 
   async run(lang) {
     const
@@ -18,4 +15,4 @@ module.exports = {
     await this.guild.updateDB(`channelMinigames.counting.${channel}`, { lastNumber: number, lastAuthor: 'setcountingnumber' });
     return this.reply(lang('success', { channel: channelLink(channel), number: bold(number) }));
   }
-};
+});

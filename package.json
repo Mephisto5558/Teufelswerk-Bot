@@ -23,6 +23,7 @@
   "dependencies": {
     "@discordjs/voice": "^0.18.0",
     "@mephisto5558/bot-website": "latest",
+    "@mephisto5558/command": "github:Mephisto5558/Command",
     "@mephisto5558/i18n": "latest",
     "@mephisto5558/mongoose-db": "latest",
     "better-ms": "^1.1.7",
