@@ -9,6 +9,7 @@ const
       domain: 'string',
       port: 'string',
       dashboard: 'string',
+      dashboardRedirectURL: 'string',
       privacyPolicy: 'string',
       invite: 'string'
     },

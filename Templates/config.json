@@ -7,6 +7,7 @@
     "domain": "Full Domain URL (if empty uses localhost)",
     "port": "The Port",
     "dashboard": "Dashboard URL",
+    "dashboardRedirectURL": "Dashboard Redirect URL for login",
     "privacyPolicy": "Privacy Policy URL",
     "invite": "Discord Invite Link"
   },

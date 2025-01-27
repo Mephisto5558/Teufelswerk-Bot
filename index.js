@@ -64,7 +64,10 @@ async function processMessageEventCallback(handlerPromises, message) {
         errorPagesDir: './Website/CustomSites/error', settingsPath: './Website/DashboardSettings', customPagesPath: './Website/CustomSites',
         ownerIds: [...this.config.devIds]
       }, errorHandler.bind(this)
-    ).init(getCommands.call(this, this.i18n.__.bBind(this.i18n, { locale: 'en', undefinedNotFound: true })));
+    ).init(
+      { redirectUri: this.config.website.dashboardRedirectURL },
+      { commands: getCommands.call(this, this.i18n.__.bBind(this.i18n, { locale: 'en', undefinedNotFound: true })) }
+    );
   }
 
   handlers.eventHandler.call(this);
